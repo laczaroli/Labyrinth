@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="AnchorPane" prefHeight="640" prefWidth="640" xmlns:fx="http://javafx.com/fxml" fx:controller="jfx.Model">
+    <children>
+        <Button prefWidth="200" prefHeight="200" text="9" onAction="#handleButtonAction" fx:id="button" />
+        <Label layoutX="126" layoutY="120" minHeight="16" minWidth="69" fx:id="label" />
+    </children>
+</AnchorPane>
