@@ -1,8 +1,5 @@
 package jfx;
 
-
-import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
@@ -10,58 +7,74 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+public class Controller implements ViewDelegate {
 
-public class Controller {
+    private Model model;
+    private Model model2;
+    private View view = new View(model, this);
 
-    private Model model = new Model();
-    private View view = new View();
+    //KOORDINÁCIÓS BEÁLLÍTÁSOK
+    int playerTurn = 0; //alapjáraton az első játékos kezd --> nullás id
+    int stepCounter = 0;
+    //..
 
-    private Stage mainStage = new Stage();
-    private Scene scene = new Scene(view,400,400);
-    public Controller() {}
+    private Scene scene = new Scene(view, 400, 400);
 
-    public void buildView(Stage stage) {
-        view.build(model);
-        this.mainStage = stage;
+    public Controller(Model model) {
+        this.model = model;
+    }
 
+    void buildView(Stage stage) {
+        view.build();
         stage.setScene(scene);
         stage.setTitle("Házifeladat");
         stage.show();
     }
 
-    public int[] drawNextStep() {
+    protected int[] drawNextStep() {
         return model.nextMove();
     }
 
-    public void addListener(GridPane gp, StackPane sp) {
-        sp.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                int[] nextMove = getModelNextMove();
-                Node source = (Node) event.getSource();
-                int col = GridPane.getColumnIndex(source);
-                int row = GridPane.getRowIndex(source);
+    @Override
+    public void addListener(StackPane sp) {
+        sp.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
+            int[] nextMove = drawNextStep();
+            Node source = (Node) mouseEvent.getSource();
+            int col = GridPane.getColumnIndex(source);
+            int row = GridPane.getRowIndex(source);
 
-                setModelPosX(row);
-                setModelPosY(col);
-                System.out.println(getModelPosX());
-                System.out.println(getModelPosY());
-                refreshView();
+            int pos = calculatePos(col, row);
+
+            for (int i = 0; i < nextMove.length; i++) {
+                if (nextMove[i] == pos) {
+                    setModelPosX(row);
+                    setModelPosY(col);
+                    commandColorRefresh();
+                    System.out.println("Sikeres lépés!");
+                    break;
+                }
             }
+
+            System.out.println("Sikertelen lépés!");
+
+            for (int a : nextMove)
+                System.out.println(a);
+
         });
     }
 
-    public void refreshView() {
-        view.getChildren().get(model.getPos()).setStyle("-fx-background-color: red; ");
+    private void commandColorRefresh() {
+        view.refreshColours(getModelPos());
+    }
+
+    private int calculatePos(int col, int row) {
+        return (row * getModelSize()) + col;
     }
 
 
-
-    public int[][] getModelTable() {
+    /*public int[][] getModelTable() {
         return model.getTable();
-    }
+    }*/
 
     public int getModelPosX() {
         return model.getPosX();
@@ -69,6 +82,10 @@ public class Controller {
 
     public int getModelPosY() {
         return model.getPosY();
+    }
+
+    public int getModelPos() {
+        return model.getPos();
     }
 
     public void setModelSize(int size) {
@@ -81,10 +98,6 @@ public class Controller {
 
     public void setModelPosY(int posY) {
         model.setPosY(posY);
-    }
-
-    public int[] getModelNextMove() {
-        return model.nextMove();
     }
 
     public int getModelSize() {

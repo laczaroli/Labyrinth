@@ -9,7 +9,7 @@ public class SWEGame extends Application {
     public void start(Stage primaryStage) {
         Model model = getAllDatas();
 
-        Controller control = new Controller();
+        Controller control = new Controller(model);
         control.buildView(primaryStage);
     }
 
