@@ -3,7 +3,9 @@ package jfx;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Text;
 
 
 public class Menu extends GridPane {
@@ -23,11 +25,20 @@ public class Menu extends GridPane {
         Button scoreboard = new Button("SCOREBOARD");
         scoreboard.setPrefWidth(250);
         scoreboard.getStyleClass().add("btn");
+        Label xd = new Label("GAME OVER");
+        xd.setOpacity(0);
+        xd.setStyle("-fx-font-size: 32px;"+"-fx-text-alignment: center");
+
 
         control.addListener(game);
         control.addListener(scoreboard);
 
-        this.add(game,0,0);
-        this.add(scoreboard,0,1);
+        this.add(xd,0,0);
+        this.add(game,0,1);
+        this.add(scoreboard,0,2);
+    }
+
+    public void showText() {
+        this.getChildren().get(0).setOpacity(100);
     }
 }

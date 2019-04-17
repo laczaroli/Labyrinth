@@ -29,9 +29,13 @@ public class MenuController {
             int col = GridPane.getRowIndex(source);
 
 
-            if(col == 0) { //rákattintott a start gamere
+            if(sp.getText().equals("START NEW GAME")) { //rákattintott a start gamere
                 gc.buildView(stage);
             }
         });
+    }
+
+    public void showText() {
+        view.showText();
     }
 }

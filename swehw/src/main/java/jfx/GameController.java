@@ -12,6 +12,7 @@ public class GameController {
     private PlayerModel player1 = new PlayerModel(0,0,8);
     private PlayerModel player2 = new PlayerModel(0,0,8);
     private GameView view = new GameView(this);
+    private MenuController mc;
 
 
     //KOORDINÁCIÓS BEÁLLÍTÁSOK
@@ -20,12 +21,13 @@ public class GameController {
     //..
 
     private Scene scene = new Scene(view, 400, 400);
+    private Stage stage;
 
     public GameController() {
     }
 
     void buildView(Stage stage) {
-
+        this.stage = stage;
         view.build();
         stage.setScene(scene);
     }
@@ -54,7 +56,7 @@ public class GameController {
                         setNextStepDirection("DEFAULT");
                         roundCount++;
                     }
-                    if(pos == 0) endGame();
+                    if(getModelTable()[row][col] == 0) endGame();
                     setModelPosX(getCurrentModel(), row);
                     setModelPosY(getCurrentModel(), col);
                     System.out.println("Sikeres lépés!");
@@ -73,7 +75,10 @@ public class GameController {
     }
 
     public void endGame() {
-        System.out.println("VÉGE A JÁTÉKNAK TESÓ, 0 RA LÉPTÉL!+!+!+!+");
+        mc = new MenuController();
+        mc.buildView(stage);
+        mc.showText();
+        System.out.println("miafasz");
     }
 
     public PlayerModel getCurrentModel() {
