@@ -6,12 +6,11 @@ import javafx.scene.control.*;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 
-class View extends GridPane {
+class GameView extends GridPane {
 
-    //Controller control = new Controller();
+    //GameController control = new GameController();
 
-    Model model;
-    Controller controller;
+    GameController controller;
 
     private int table[][]  = new int[][] {{3,5,0,2,1,2,3,4},
             {1,2,2,1,4,5,2,0},
@@ -23,8 +22,7 @@ class View extends GridPane {
             {2,2,0,4,3,5,4,0}};
 
 
-    public View(Model model, Controller controller) {
-        this.model = model;
+    public GameView(GameController controller) {
         this.controller = controller;
     }
 
@@ -32,7 +30,7 @@ class View extends GridPane {
     public void build() {
         this.setAlignment(Pos.CENTER);
         updateTable(table);
-        System.out.println(this.getChildren());
+        setStarterPosition();
         updateListeners();
     }
 
@@ -42,23 +40,31 @@ class View extends GridPane {
         }
     }
 
+    public void setStarterPosition() {
+        this.getChildren().get(0).setStyle("-fx-background-color: red");
+        drawNextStep();
+    }
+
+    public void drawNextStep() {
+        int[] nextStep = controller.drawNextStep(controller.getCurrentModel());
+        for(int i = 0; i<nextStep.length; i++)
+            if(nextStep[i] != -1) {
+                this.getChildren().get(nextStep[i]).setStyle("-fx-background-color: green;");
+            }
+
+    }
+
     public void refreshColours(int index) {
         for(int i = 0; i<table.length; i++) {
             for (int j = 0; j < table[i].length; j++) {
                 this.getChildren().get((i * 8) + j).setStyle("-fx-background-color: white; " +
-                                                             "-fx-border-style: solid; " +
-                                                             "-fx-border-color: black;");
+                        "-fx-border-style: solid; " +
+                        "-fx-border-color: black;");
             }
         }
+        drawNextStep();
+        this.getChildren().get(controller.getModelPos(controller.getNextPlayer())).setStyle("-fx-background-color: yellow;");
         this.getChildren().get(index).setStyle("-fx-background-color: red;");
-        int[] nextStep = controller.drawNextStep();
-        for(int i = 0; i<nextStep.length; i++)
-            if(nextStep[i] != -1) {
-                this.getChildren().get(nextStep[i]).setStyle("-fx-background-color: green;");
-                System.out.println("Ide léptél elvileg: " + nextStep[i]);
-            }
-
-
     }
 
     public void updateTable(int[][] table) {
