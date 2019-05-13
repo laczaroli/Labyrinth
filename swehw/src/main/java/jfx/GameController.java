@@ -1,5 +1,6 @@
 package jfx;
 
+
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
@@ -9,15 +10,21 @@ import javafx.stage.Stage;
 
 public class GameController {
 
-    private PlayerModel player1 = new PlayerModel(0,0,8);
-    private PlayerModel player2 = new PlayerModel(0,0,8);
+    private PlayerModel player1 = new PlayerModel(0, 0, 8);
+    private PlayerModel player2 = new PlayerModel(0, 0, 8);
     private GameView view = new GameView(this);
     private MenuController mc;
 
+    private int[][] table = getModelTable();
+
+    long start;
+    long end;
+
 
     //KOORDINÁCIÓS BEÁLLÍTÁSOK
-    private boolean playerTurn = false; //alapjáraton az első játékos kezd --> false érték
+    private boolean playerTurn = false;
     private int roundCount = 0;
+    private boolean lastRound = false;
     //..
 
     private Scene scene = new Scene(view, 400, 400);
@@ -30,6 +37,7 @@ public class GameController {
         this.stage = stage;
         view.build();
         stage.setScene(scene);
+        startTimer();
     }
 
     protected int[] drawNextStep(PlayerModel model) {
@@ -43,64 +51,91 @@ public class GameController {
             int col = GridPane.getColumnIndex(source);
             int row = GridPane.getRowIndex(source);
 
-            int pos = calculatePos(col, row);
+            int pos = calculatePos(row, col);
 
-            for (int i = 0; i < nextMove.length; i++) {
-                if (nextMove[i] == pos) {
-                    if(getNextPlayer() == player2) {
-                        if (i == 1 || i == 3)
-                            setNextStepDirection("horizontal"); //kizárólag ellentétes irányokba léphet
-                        else if (i == 0 || i == 2)
-                            setNextStepDirection("vertical"); //kizárólag ellentétes irányokba léphet
-                    } else if(getNextPlayer() == player1) {
-                        setNextStepDirection("DEFAULT");
-                        roundCount++;
-                    }
-                    if(getModelTable()[row][col] == 0) endGame();
-                    setModelPosX(getCurrentModel(), row);
-                    setModelPosY(getCurrentModel(), col);
-                    System.out.println("Sikeres lépés!");
+            for (possibleStepDirecitons dir : possibleStepDirecitons.values()) {
+                if (nextMove[dir.getValue()] == pos) {
+                    performNextStep(dir);
+                    setPlayerPosition(row, col);
+                    isGoalState();
                     playerTurn = !playerTurn;
-
-                    System.out.println("Player1 pos: " + getModelPos(player1));
-                    System.out.println("Player2 pos: " + getModelPos(player2));
                     commandColorRefresh();
                     break;
                 }
             }
-            for (int a : nextMove)
-                System.out.println(a);
-
         });
     }
 
-    public void endGame() {
+    public void performNextStep(possibleStepDirecitons dir) {
+        if (getNextPlayer() == player2) {
+            if (dir == possibleStepDirecitons.DOWN || dir == possibleStepDirecitons.UP)
+                setNextStepDirection(Directions.HORIZONTAL);
+            else if (dir == possibleStepDirecitons.RIGHT || dir == possibleStepDirecitons.LEFT)
+                setNextStepDirection(Directions.VERTICAL);
+        } else if (getNextPlayer() == player1) {
+            setNextStepDirection(Directions.DEFAULT);
+            roundCount++;
+        }
+    }
+
+    private void endGame(Result result) {
         mc = new MenuController();
-        mc.buildView(stage);
-        mc.showText();
-        System.out.println("miafasz");
+        if (result == Result.GAMEOVER) {
+            mc.buildView(stage);
+            mc.showText();
+        } else if (result == Result.WIN) {
+            mc.buildView(stage);
+            mc.showText();
+            mc.setLabelText("CONGRATULATIONS!");
+        }
+    }
+
+    private void setPlayerPosition(int row, int col) {
+        setModelPosX(getCurrentModel(), row);
+        setModelPosY(getCurrentModel(), col);
+    }
+
+    private void isGoalState() {
+        if (getModelPosX(getCurrentModel()) == 7 && getModelPosY(getCurrentModel()) == 7) {
+            if(lastRound) {
+                getCurrentModel().getResults(stopTimer(), roundCount);
+                System.out.println("Szép volt!");
+                endGame(Result.WIN);
+            }
+            lastRound = true;
+        } else if(lastRound)
+                endGame(Result.GAMEOVER);
+    }
+
+    public void startTimer() {
+        start = System.currentTimeMillis();
+    }
+
+    public long stopTimer() {
+        end = System.currentTimeMillis();
+        return (end-start)/1000;
     }
 
     public PlayerModel getCurrentModel() {
-        if(!playerTurn)
+        if (!playerTurn)
             return player1;
         return player2;
     }
 
     public PlayerModel getNextPlayer() {
-        return (getCurrentModel() == player1)? player2 : player1;
+        return (getCurrentModel() == player1) ? player2 : player1;
     }
 
-    private void setNextStepDirection(String s) {
-        getNextPlayer().nextStepDirection(s);
+    private void setNextStepDirection(Directions direction) {
+        getNextPlayer().nextStepDirection(direction);
     }
 
     private void commandColorRefresh() {
         view.refreshColours(getModelPos(getCurrentModel()));
     }
 
-    private int calculatePos(int col, int row) {
-        return (row * getModelSize(getCurrentModel())) + col;
+    private int calculatePos(int row, int col) {
+        return (row * getModelSize()) + col;
     }
 
 
@@ -108,11 +143,11 @@ public class GameController {
         return player1.getTable();
     }
 
-    public int getModelPosX(PlayerModel model) {
+    private int getModelPosX(PlayerModel model) {
         return model.getPosX();
     }
 
-    public int getModelPosY(PlayerModel model) {
+    private int getModelPosY(PlayerModel model) {
         return model.getPosY();
     }
 
@@ -124,20 +159,16 @@ public class GameController {
         model.setSize(size);
     }
 
-    public void setModelPosX(PlayerModel model, int posX) {
+    private void setModelPosX(PlayerModel model, int posX) {
         model.setPosX(posX);
     }
 
-    public void setModelPosY(PlayerModel model, int posY) {
+    private void setModelPosY(PlayerModel model, int posY) {
         model.setPosY(posY);
     }
 
-    public int getModelSize(PlayerModel model) {
-        return model.getSize();
-    }
-
-
-    public static void main(String[] args) {
+    private int getModelSize() {
+        return getCurrentModel().getSize();
     }
 
 }

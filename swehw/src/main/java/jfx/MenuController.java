@@ -29,10 +29,20 @@ public class MenuController {
             int col = GridPane.getRowIndex(source);
 
 
-            if(sp.getText().equals("START NEW GAME")) { //rákattintott a start gamere
+            if(sp.getText().equals("START NEW GAME")) //rákattintott a start gamere
                 gc.buildView(stage);
-            }
+
+            if(sp.getText().equals("QUIT")) //rákattintott a start gamere
+                closeApp();
         });
+    }
+
+    public void setLabelText(String s) {
+        view.setText(s);
+    }
+
+    public void closeApp() {
+        stage.close();
     }
 
     public void showText() {

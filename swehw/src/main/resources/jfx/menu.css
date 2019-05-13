@@ -1,0 +1,15 @@
+* {
+    -fx-alignment: center;
+}
+
+.btn {
+    -fx-color: white;
+    -fx-pref-width: 25em;
+}
+
+.resultLabel {
+    -fx-font-size: 2.5em;
+    -fx-text-alignment: center;
+    -fx-pref-width:  25em;
+    -fx-opacity:  0;
+}

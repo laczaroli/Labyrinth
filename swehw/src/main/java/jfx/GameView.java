@@ -12,18 +12,13 @@ class GameView extends GridPane {
 
     GameController controller;
 
-    private int table[][]  = new int[][] {{3,5,0,2,1,2,3,4},
-            {1,2,2,1,4,5,2,0},
-            {2,0,1,3,4,3,2,1},
-            {4,4,0,2,3,0,5,2},
-            {4,1,0,3,3,2,4,3},
-            {1,0,2,2,3,0,1,0},
-            {4,0,2,2,1,4,0,1},
-            {2,2,0,4,3,5,4,0}};
+    int[][] table;
 
 
     public GameView(GameController controller) {
         this.controller = controller;
+        this.getStylesheets().add(this.getClass().getResource("gameView.css").toExternalForm());
+        table = controller.getModelTable();
     }
 
 
@@ -72,9 +67,7 @@ class GameView extends GridPane {
             for (int col = 0; col < 8; col++) {
                 Label label = new Label(String.valueOf(table[row][col]));
                 StackPane square = new StackPane();
-                square.setStyle("-fx-background-color: white;");
-                square.setStyle(("-fx-border-style: solid;"));
-                square.setStyle("-fx-border-color: black;");
+                square.getStyleClass().add("columns");
                 square.getChildren().add(label);
                 this.add(square, col, row);
             }
