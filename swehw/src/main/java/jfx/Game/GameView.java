@@ -12,15 +12,9 @@ import javafx.geometry.VPos;
 class GameView extends GridPane {
 
 
-    /**
-     * An object to reach my controller.
-     */
-    GameController controller;
+    private GameController controller;
 
-    /**
-     * The table array that that contains my playground.
-     */
-    int[][] table;
+    private int[][] table;
 
     /**
      * Creates a constructor setting the {@code CSS} files to my object.

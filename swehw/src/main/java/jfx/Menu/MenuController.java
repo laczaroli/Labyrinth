@@ -54,12 +54,12 @@ public class MenuController {
                 if (view.getPlayerName().length() > 0) {
                     gc.buildView(stage);
                     gc.setPlayerName(view.getPlayerName());
-                    logger.info("Have fun {}",view.getPlayerName());
+                    logger.info("Have fun {}!",view.getPlayerName());
                 } else {
                     setTextSize(1);
-                    setLabelText("Játék előtt add meg a neved!");
+                    setLabelText("You must write your name in the box below!");
                     setLabelOpacity(100);
-                    logger.error("Before playing please write your name in the TextBox");
+                    logger.error("PLease write your name in the TextBox");
                 }
             }
 
@@ -112,9 +112,4 @@ public class MenuController {
      * the player's results.
      */
 
-    public List<GameResult> getTheToplist(int numberOfPlayers) {
-        Injector injector = Guice.createInjector(new PersistenceModule("game"));
-        GameResultDao gameDao = injector.getInstance( GameResultDao.class);
-        return gameDao.findBest(numberOfPlayers);
-    }
 }

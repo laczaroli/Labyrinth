@@ -178,7 +178,7 @@ public class GameController {
                 return true;
             }
             lastRound = true;
-        } else if(lastRound) {
+        } else if(lastRound || getModelTable()[getMarkerPosX(getCurrentMarker())][getMarkerPosY(getCurrentMarker())] == 0) {
             endGame(Result.GAMEOVER);
             return false;
         }

@@ -53,7 +53,7 @@ public class Menu extends GridPane {
 
         if(!active) {
             this.add(resultLabel, 0, 0);
-            this.add(new Label("\tA játék elkezdése előtt kérlek írd be a neved"), 0, 1);
+            this.add(new Label("Your name"), 0, 1);
             this.add(name,0,2);
             this.add(game, 0, 3);
             this.add(scoreboard, 0, 4);

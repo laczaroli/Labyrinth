@@ -1,11 +1,15 @@
 package jfx.Scoreboard;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import jfx.Menu.MenuController;
 import result.GameResult;
+import result.GameResultDao;
+import util.guice.PersistenceModule;
 
 import java.util.List;
 
@@ -15,6 +19,8 @@ import java.util.List;
 public class ScoreboardController {
     MenuController mc = new MenuController();
     Scoreboard scoreBoard = new Scoreboard(this);
+
+
 
     private Scene scene = new Scene(scoreBoard, 400, 400);
     private Stage stage;
@@ -38,6 +44,8 @@ public class ScoreboardController {
     }
 
     public List<GameResult> getScoreboardResults(int numberOfQuery) {
-        return mc.getTheToplist(10);
+        Injector injector = Guice.createInjector(new PersistenceModule("game"));
+        GameResultDao gameDao = injector.getInstance( GameResultDao.class);
+        return gameDao.findBest(numberOfQuery);
     }
 }

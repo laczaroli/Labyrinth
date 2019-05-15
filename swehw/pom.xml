@@ -8,6 +8,7 @@
     <packaging>jar</packaging>
 
     <name>Labyrinth</name>
+    <description>This project made for Software Engineering course.</description>
 
     <developers>
         <developer>
