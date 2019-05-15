@@ -1,4 +1,4 @@
-package jfx;
+package jfx.Game;
 
 import javafx.geometry.Pos;
 import javafx.scene.layout.*;
@@ -6,15 +6,26 @@ import javafx.scene.control.*;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 
+/**
+ * View class for displaying the game.
+ */
 class GameView extends GridPane {
 
-    //GameController control = new GameController();
 
+    /**
+     * An object to reach my controller.
+     */
     GameController controller;
 
+    /**
+     * The table array that that contains my playground.
+     */
     int[][] table;
 
-
+    /**
+     * Creates a constructor setting the {@code CSS} files to my object.
+     * @param controller that controls the view
+     */
     public GameView(GameController controller) {
         this.controller = controller;
         this.getStylesheets().add(this.getClass().getResource("gameView.css").toExternalForm());
@@ -22,6 +33,9 @@ class GameView extends GridPane {
     }
 
 
+    /**
+     * A function building the playground.
+     */
     public void build() {
         this.setAlignment(Pos.CENTER);
         updateTable(table);
@@ -29,19 +43,28 @@ class GameView extends GridPane {
         updateListeners();
     }
 
+    /**
+     * Updates the columns to react every input from the player.
+     */
     public void updateListeners() {
         for(int i = 0; i<this.getChildren().size(); i++) {
             controller.addListener((StackPane) this.getChildren().get(i));
         }
     }
 
+    /**
+     * Sets the player's starting position on the top-left side of the table.
+     */
     public void setStarterPosition() {
         this.getChildren().get(0).setStyle("-fx-background-color: red");
         drawNextStep();
     }
 
+    /**
+     * It is drawing the next step to help the player deciding his/her next move.
+     */
     public void drawNextStep() {
-        int[] nextStep = controller.drawNextStep(controller.getCurrentModel());
+        int[] nextStep = controller.drawNextStep(controller.getCurrentPlayer());
         for(int i = 0; i<nextStep.length; i++)
             if(nextStep[i] != -1) {
                 this.getChildren().get(nextStep[i]).setStyle("-fx-background-color: green;");
@@ -49,6 +72,10 @@ class GameView extends GridPane {
 
     }
 
+    /**
+     * It is refreshing the colors on the map after every steps.
+     * @param index locates the player's current position
+     */
     public void refreshColours(int index) {
         for(int i = 0; i<table.length; i++) {
             for (int j = 0; j < table[i].length; j++) {
@@ -62,6 +89,10 @@ class GameView extends GridPane {
         this.getChildren().get(index).setStyle("-fx-background-color: red;");
     }
 
+    /**
+     * Sets the columns' borders, labels and makes it fit to the window.
+     * @param table
+     */
     public void updateTable(int[][] table) {
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
