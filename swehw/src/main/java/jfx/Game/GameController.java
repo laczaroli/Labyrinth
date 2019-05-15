@@ -22,8 +22,8 @@ import util.guice.PersistenceModule;
  */
 public class GameController {
 
-    private PlayerModel player1 = new PlayerModel(0, 0, 8);
-    private PlayerModel player2 = new PlayerModel(0, 0, 8);
+    private MarkerModel player1 = new MarkerModel(0, 0, 8);
+    private MarkerModel player2 = new MarkerModel(0, 0, 8);
 
     private GameView view = new GameView(this);
     private MenuController mc;
@@ -76,7 +76,7 @@ public class GameController {
      * @param model the current marker
      * @return an array from the model
      */
-    protected int[] drawNextStep(PlayerModel model) {
+    protected int[] drawNextStep(MarkerModel model) {
         return model.nextMove();
     }
 
@@ -86,7 +86,7 @@ public class GameController {
      */
     public void addListener(StackPane sp) {
         sp.addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
-            int[] nextMove = drawNextStep(getCurrentPlayer());
+            int[] nextMove = drawNextStep(getCurrentMarker());
             Node source = (Node) mouseEvent.getSource();
             int col = GridPane.getColumnIndex(source);
             int row = GridPane.getRowIndex(source);
@@ -97,11 +97,11 @@ public class GameController {
             for (possibleStepDirections dir : possibleStepDirections.values()) {
                 if (nextMove[dir.getValue()] == pos) {
                     setNextStepDirection(performNextStep(dir));
-                    setPlayerPosition(row, col);
+                    setMarkerPosition(row, col);
                     isSolved();
                     playerTurn = !playerTurn;
-                    commandColorRefresh();
-                    logger.debug("The current marker's position is: ({},{})",getModelPosX(getCurrentPlayer()), getModelPosY(getCurrentPlayer()));
+                    refreshColors();
+                    logger.debug("The current marker's position is: ({},{})",getMarkerPosX(getCurrentMarker()), getMarkerPosY(getCurrentMarker()));
                     break;
                 }
             }
@@ -115,12 +115,12 @@ public class GameController {
      * @return the next player's direction.
      */
     public Directions performNextStep(possibleStepDirections dir) {
-        if (getNextPlayer() == player2) {
+        if (getNextMarker() == player2) {
             if (dir == possibleStepDirections.DOWN || dir == possibleStepDirections.UP)
                 return Directions.HORIZONTAL;
             else if (dir == possibleStepDirections.RIGHT || dir == possibleStepDirections.LEFT)
                 return Directions.VERTICAL;
-        } else if (getNextPlayer() == player1) {
+        } else if (getNextMarker() == player1) {
             roundCount++;
             return Directions.DEFAULT;
         }
@@ -154,11 +154,11 @@ public class GameController {
      * @param row the row on the table
      * @param col the column on the table
      */
-    public void setPlayerPosition(int row, int col) {
-        if(row >= getModelSize() || col >= getModelSize())
+    public void setMarkerPosition(int row, int col) {
+        if(row >= getPlaygroundSizeSize() || col >= getPlaygroundSizeSize())
             throw new IndexOutOfBoundsException();
-        setPlayerPosX(getCurrentPlayer(), row);
-        setPlayerPosY(getCurrentPlayer(), col);
+        setMarkerPosX(getCurrentMarker(), row);
+        setMarkerPosY(getCurrentMarker(), col);
     }
 
     /**
@@ -168,9 +168,9 @@ public class GameController {
      * {@code false} if the player couldn't reach the goal state.
      */
     public boolean isSolved() {
-        if (getModelPosX(getCurrentPlayer()) == 7 && getModelPosY(getCurrentPlayer()) == 7) {
+        if (getMarkerPosX(getCurrentMarker()) == 7 && getMarkerPosY(getCurrentMarker()) == 7) {
             if(lastRound) {
-                GameResult res = getCurrentPlayer().setResults(playerName,stopTimer(), roundCount);
+                GameResult res = getCurrentMarker().setResults(playerName,stopTimer(), roundCount);
 
                 gameDao.persist(res);
 
@@ -205,7 +205,7 @@ public class GameController {
      * Get the player's current marker.
      * @return the current marker's object
      */
-    public PlayerModel getCurrentPlayer() {
+    public MarkerModel getCurrentMarker() {
         if (!playerTurn)
             return player1;
         return player2;
@@ -223,8 +223,8 @@ public class GameController {
      * Get the player's next marker.
      * @return the next marker's object.
      */
-    public PlayerModel getNextPlayer() {
-        return (getCurrentPlayer() == player1) ? player2 : player1;
+    public MarkerModel getNextMarker() {
+        return (getCurrentMarker() == player1) ? player2 : player1;
     }
 
     /**
@@ -233,7 +233,7 @@ public class GameController {
      * @param direction the next step direction.
      */
     public void setNextStepDirection(Directions direction) {
-        getNextPlayer().nextStepDirection(direction);
+        getNextMarker().nextStepDirection(direction);
     }
 
 
@@ -241,8 +241,8 @@ public class GameController {
      * This function sends a command to the view to
      * refresh the colors on the playground.
      */
-    public void commandColorRefresh() {
-        view.refreshColours(getModelPos(getCurrentPlayer()));
+    public void refreshColors() {
+        view.refreshColours(getModelPos(getCurrentMarker()));
     }
 
     /**
@@ -253,9 +253,9 @@ public class GameController {
      * @return the calculated position
      */
     public int calculatePos(int row, int col) {
-        if(row > getModelSize() || col > getModelSize())
+        if(row > getPlaygroundSizeSize() || col > getPlaygroundSizeSize())
             throw new IllegalArgumentException();
-        return (row * getModelSize()) + col;
+        return (row * getPlaygroundSizeSize()) + col;
     }
 
     /**
@@ -271,7 +271,7 @@ public class GameController {
      * @param model a marker
      * @return the marker's X coordinate
      */
-    public int getModelPosX(PlayerModel model) {
+    public int getMarkerPosX(MarkerModel model) {
         return model.getPosX();
     }
 
@@ -280,7 +280,7 @@ public class GameController {
      * @param model a marker
      * @return the marker's Y coordinate
      */
-    public int getModelPosY(PlayerModel model) {
+    public int getMarkerPosY(MarkerModel model) {
         return model.getPosY();
     }
 
@@ -289,7 +289,7 @@ public class GameController {
      * @param model a marker
      * @return the marker's position on the table
      */
-    public int getModelPos(PlayerModel model) {
+    public int getModelPos(MarkerModel model) {
         return model.getPos();
     }
 
@@ -298,7 +298,7 @@ public class GameController {
      * @param model a marker
      * @param posX an X coordinate
      */
-    public void setPlayerPosX(PlayerModel model, int posX) {
+    public void setMarkerPosX(MarkerModel model, int posX) {
         model.setPosX(posX);
     }
 
@@ -307,7 +307,7 @@ public class GameController {
      * @param model a marker
      * @param posY an Y coordinate
      */
-    public void setPlayerPosY(PlayerModel model, int posY) {
+    public void setMarkerPosY(MarkerModel model, int posY) {
         model.setPosY(posY);
     }
 
@@ -315,8 +315,8 @@ public class GameController {
      * Gets the player's table size.
      * @return the player's table size.
      */
-    public int getModelSize() {
-        return getCurrentPlayer().getSize();
+    public int getPlaygroundSizeSize() {
+        return getCurrentMarker().getSize();
     }
 
 }

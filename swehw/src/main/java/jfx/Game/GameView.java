@@ -64,7 +64,7 @@ class GameView extends GridPane {
      * It is drawing the next step to help the player deciding his/her next move.
      */
     public void drawNextStep() {
-        int[] nextStep = controller.drawNextStep(controller.getCurrentPlayer());
+        int[] nextStep = controller.drawNextStep(controller.getCurrentMarker());
         for(int i = 0; i<nextStep.length; i++)
             if(nextStep[i] != -1) {
                 this.getChildren().get(nextStep[i]).setStyle("-fx-background-color: green;");
@@ -85,7 +85,7 @@ class GameView extends GridPane {
             }
         }
         drawNextStep();
-        this.getChildren().get(controller.getModelPos(controller.getNextPlayer())).setStyle("-fx-background-color: yellow;");
+        this.getChildren().get(controller.getModelPos(controller.getNextMarker())).setStyle("-fx-background-color: yellow;");
         this.getChildren().get(index).setStyle("-fx-background-color: red;");
     }
 

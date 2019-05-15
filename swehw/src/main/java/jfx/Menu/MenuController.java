@@ -8,6 +8,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import jfx.Scoreboard.ScoreboardController;
 import jfx.Game.GameController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import result.GameResult;
 import result.GameResultDao;
 import util.guice.PersistenceModule;
@@ -24,6 +26,8 @@ public class MenuController {
 
     Injector injector = Guice.createInjector(new PersistenceModule("game"));
     GameResultDao gameDao = injector.getInstance( GameResultDao.class);
+
+    Logger logger = LoggerFactory.getLogger(MenuController.class);
 
     Stage stage;
     Scene menuScene = new Scene(view,400,400);
@@ -50,18 +54,24 @@ public class MenuController {
                 if (view.getPlayerName().length() > 0) {
                     gc.buildView(stage);
                     gc.setPlayerName(view.getPlayerName());
+                    logger.info("Have fun {}",view.getPlayerName());
                 } else {
                     setTextSize(1);
                     setLabelText("Játék előtt add meg a neved!");
                     setLabelOpacity(100);
+                    logger.error("Before playing please write your name in the TextBox");
                 }
             }
 
-            if(btn.getText().equals("QUIT"))
+            if(btn.getText().equals("QUIT")) {
+                logger.debug("The player closed the game.");
                 closeApp();
+            }
+
 
             if(btn.getText().equals("SCOREBOARD")) {
                 sc.buildScoreBoard(stage);
+                logger.debug("Clicked on the Scoreboard tab.");
             }
 
         });
@@ -96,7 +106,7 @@ public class MenuController {
     }
 
     /**
-     * Gets the best n players.
+     * Gets the best n players data.
      * @param numberOfPlayers tells how many player's results do you want to see
      * @return a list of a {@code GameResult} object, that contains
      * the player's results.

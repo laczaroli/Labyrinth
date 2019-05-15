@@ -10,9 +10,9 @@ import java.time.ZonedDateTime;
 /**
  * The player's model, that contains his/her datas.
  */
-public class PlayerModel {
+public class MarkerModel {
 
-    Logger logger = LoggerFactory.getLogger(PlayerModel.class);
+    Logger logger = LoggerFactory.getLogger(MarkerModel.class);
     private int size;
     private int currentPosX;
     private int currentPosY;
@@ -23,14 +23,14 @@ public class PlayerModel {
      * The playground in an array.
      */
     private int table[][] = new int[][]{
-            {1,1,1,1,1,1,1,1},
-            {1,1,1,1,1,1,1,1},
-            {1,1,1,1,1,1,1,1},
-            {1,1,1,1,1,1,1,1},
-            {1,1,1,1,1,1,1,1},
-            {1,1,1,1,1,1,1,1},
-            {1,1,1,1,1,1,1,1},
-            {1,1,1,1,1,1,1,0}};
+            {6,2,7,4,2,4,4,2},
+            {2,2,2,5,4,2,1,6},
+            {3,4,2,4,2,5,5,3},
+            {4,5,4,3,2,2,3,4},
+            {2,1,2,3,4,4,2,3},
+            {2,4,3,2,3,3,6,4},
+            {6,4,2,3,3,2,6,3},
+            {6,7,4,3,3,2,2,0}};
 
     /**
      * A constructor that sets the marker's starting position and
@@ -39,7 +39,7 @@ public class PlayerModel {
      * @param y a Y coordinate
      * @param size the size of the table.
      */
-    public PlayerModel(int x, int y, int size) {
+    public MarkerModel(int x, int y, int size) {
         this.size = size;
         if(x > size || y > size)
             throw new IllegalArgumentException();

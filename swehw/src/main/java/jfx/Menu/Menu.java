@@ -4,6 +4,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 
 
 /**
@@ -17,6 +21,8 @@ public class Menu extends GridPane {
     Button scoreboard = new Button("SCOREBOARD");
     Button quit = new Button("QUIT");
     TextField name = new TextField();
+
+    Logger logger = LoggerFactory.getLogger(Menu.class);
 
     MenuController control;
 
@@ -55,6 +61,7 @@ public class Menu extends GridPane {
 
             active = true;
         }
+        logger.info("The menu has been built.");
     }
 
     /**

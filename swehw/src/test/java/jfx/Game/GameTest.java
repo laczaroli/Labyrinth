@@ -2,13 +2,12 @@ package jfx.Game;
 
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GameTest {
     GameController gc = new GameController();
-    PlayerModel p = new PlayerModel(0,0,8);
+    MarkerModel p = new MarkerModel(0,0,8);
 
     @Test
     void testSteps() {
@@ -20,20 +19,20 @@ public class GameTest {
 
     @Test
     void positionTest() {
-        assertThrows(IndexOutOfBoundsException.class, () -> gc.setPlayerPosition(12,12));
+        assertThrows(IndexOutOfBoundsException.class, () -> gc.setMarkerPosition(12,12));
         assertThrows(IllegalArgumentException.class, () -> gc.calculatePos(12,12));
     }
 
     @Test
     void modelCreationTest() {
-        assertThrows(IllegalArgumentException.class, () -> new PlayerModel(10,10,8));
-        assertThrows(IllegalArgumentException.class, () -> new PlayerModel(0,0,1));
+        assertThrows(IllegalArgumentException.class, () -> new MarkerModel(10,10,8));
+        assertThrows(IllegalArgumentException.class, () -> new MarkerModel(0,0,1));
     }
 
     @Test
     void gameSolvedTest() {
         assertFalse(gc.isSolved());
-        gc.setPlayerPosition(7,7);
+        gc.setMarkerPosition(7,7);
         assertTrue(gc.isSolved());
     }
 }
