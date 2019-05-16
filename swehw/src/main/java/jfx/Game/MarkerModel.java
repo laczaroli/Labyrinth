@@ -88,10 +88,10 @@ public class MarkerModel {
      * @param numberOfRounds the number of rounds
      * @return a {@code GameResult} object
      */
-    public GameResult setResults(String name, long gameDuration, int numberOfRounds) {
+    public GameResult setResults(String name, long gameDuration, int numberOfRounds, boolean solved) {
         return GameResult.builder()
                 .player(name)
-                .solved(true)
+                .solved(solved)
                 .created(ZonedDateTime.now())
                 .roundCount(numberOfRounds)
                 .duration(gameDuration)

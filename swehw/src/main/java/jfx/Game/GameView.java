@@ -18,6 +18,7 @@ class GameView extends GridPane {
 
     /**
      * Creates a constructor setting the {@code CSS} files to my object.
+     *
      * @param controller that controls the view
      */
     public GameView(GameController controller) {
@@ -41,7 +42,7 @@ class GameView extends GridPane {
      * Updates the columns to react every input from the player.
      */
     public void updateListeners() {
-        for(int i = 0; i<this.getChildren().size(); i++) {
+        for (int i = 0; i < this.getChildren().size(); i++) {
             controller.addListener((StackPane) this.getChildren().get(i));
         }
     }
@@ -59,8 +60,8 @@ class GameView extends GridPane {
      */
     public void drawNextStep() {
         int[] nextStep = controller.drawNextStep(controller.getCurrentMarker());
-        for(int i = 0; i<nextStep.length; i++)
-            if(nextStep[i] != -1) {
+        for (int i = 0; i < nextStep.length; i++)
+            if (nextStep[i] != -1) {
                 this.getChildren().get(nextStep[i]).setStyle("-fx-background-color: green;");
             }
 
@@ -68,10 +69,11 @@ class GameView extends GridPane {
 
     /**
      * It is refreshing the colors on the map after every steps.
+     *
      * @param index locates the player's current position
      */
     public void refreshColours(int index) {
-        for(int i = 0; i<table.length; i++) {
+        for (int i = 0; i < table.length; i++) {
             for (int j = 0; j < table[i].length; j++) {
                 this.getChildren().get((i * 8) + j).setStyle("-fx-background-color: white; " +
                         "-fx-border-style: solid; " +
@@ -85,6 +87,7 @@ class GameView extends GridPane {
 
     /**
      * Sets the columns' borders, labels and makes it fit to the window.
+     *
      * @param table
      */
     public void updateTable(int[][] table) {

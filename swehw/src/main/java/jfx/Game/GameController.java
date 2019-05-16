@@ -50,6 +50,8 @@ public class GameController {
      */
     private boolean lastRound = false;
 
+    private boolean solved = false;
+
     private String playerName;
 
     private Scene scene = new Scene(view, 400, 400);
@@ -146,7 +148,12 @@ public class GameController {
             mc.setTextSize(2.5);
             mc.setLabelText("CONGRATULATIONS!");
             logger.info("The player is passed the labyrinth!");
+            solved = true;
         }
+
+        GameResult res = getCurrentMarker().setResults(playerName,stopTimer(), roundCount, solved);
+
+        gameDao.persist(res);
     }
 
     /**
@@ -170,10 +177,6 @@ public class GameController {
     public boolean isSolved() {
         if (getMarkerPosX(getCurrentMarker()) == 7 && getMarkerPosY(getCurrentMarker()) == 7) {
             if(lastRound) {
-                GameResult res = getCurrentMarker().setResults(playerName,stopTimer(), roundCount);
-
-                gameDao.persist(res);
-
                 endGame(Result.WIN);
                 return true;
             }
