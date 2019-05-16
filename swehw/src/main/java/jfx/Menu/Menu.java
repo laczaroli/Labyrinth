@@ -33,7 +33,7 @@ public class Menu extends GridPane {
      */
     public Menu(MenuController control) {
         this.control = control;
-        this.getStylesheets().add(this.getClass().getResource("menu.css").toExternalForm());
+        this.getStylesheets().add(this.getClass().getResource("/menu.css").toExternalForm());
     }
 
     /**

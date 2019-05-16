@@ -23,7 +23,7 @@ class GameView extends GridPane {
      */
     public GameView(GameController controller) {
         this.controller = controller;
-        this.getStylesheets().add(this.getClass().getResource("gameView.css").toExternalForm());
+        this.getStylesheets().add(this.getClass().getResource("/gameView.css").toExternalForm());
         table = controller.getModelTable();
     }
 
